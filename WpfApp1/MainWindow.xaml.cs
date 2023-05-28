@@ -20,7 +20,7 @@ namespace WpfApp1
 {
     public partial class MainWindow : Window
     {
-        public void InitializeDataTable()
+        public NpgsqlConnection GetConnection()
         {
             NpgsqlConnection con = new NpgsqlConnection("Host=localhost;Port=5432;Database=test;Username=postgres;Password=1234");
             try
@@ -37,8 +37,12 @@ namespace WpfApp1
                 MessageBox.Show("Error");
                 con.Close();
             }
+            return con;
+        }
+        public void InitializeDataTable()
+        {
             string sql = $"SELECT * FROM test";
-            NpgsqlCommand command = new NpgsqlCommand(sql, con);
+            NpgsqlCommand command = new NpgsqlCommand(sql, GetConnection());
             DataTable dt = new DataTable();
             dt.Load(command.ExecuteReader(CommandBehavior.CloseConnection));
             DataGrid1.DataContext = dt;
@@ -54,34 +58,20 @@ namespace WpfApp1
         }
         private void click(object sender, RoutedEventArgs e)
         {
-            NpgsqlConnection con = new NpgsqlConnection("Host=localhost;Port=5432;Database=test;Username=postgres;Password=1234");
-            try
-            {
-                con.Open();
-            }
-            catch (NpgsqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-                con.Close();
-            }
-            catch (System.IO.IOException)
-            {
-                MessageBox.Show("Error");
-                con.Close();
-            }
             string sql = "INSERT INTO test(name, email, age) VALUES (@name, @email, @age)";
-            NpgsqlCommand command = new NpgsqlCommand(sql, con);
+            NpgsqlCommand command = new NpgsqlCommand(sql, GetConnection());
             command.Parameters.Add(new NpgsqlParameter("@name", textBox_name.Text));
             command.Parameters.Add(new NpgsqlParameter("@email", textBox_email.Text));
-            string text_age = textBox_age.Text;
-            int age;
-            bool isConvToInt = int.TryParse(textBox_age.Text, out age);
-            command.Parameters.Add(new NpgsqlParameter("@age", age));
+            command.Parameters.Add(new NpgsqlParameter("@age", Convert.ToInt32(textBox_age.Text)));
+            command.ExecuteNonQuery();
+            InitializeDataTable();
+        }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string sql = "TRUNCATE test RESTART IDENTITY;";
+            NpgsqlCommand command = new NpgsqlCommand(sql, GetConnection());
             command.ExecuteNonQuery();
             InitializeDataTable();
         }
     }
-
-    
-
 }
