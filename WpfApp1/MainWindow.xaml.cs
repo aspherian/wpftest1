@@ -1,20 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Npgsql;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace WpfApp1
 {
@@ -41,8 +28,7 @@ namespace WpfApp1
         }
         public void InitializeDataTable()
         {
-            string sql = $"SELECT * FROM test";
-            NpgsqlCommand command = new NpgsqlCommand(sql, GetConnection());
+            NpgsqlCommand command = new NpgsqlCommand($"SELECT * FROM test", GetConnection());
             DataTable dt = new DataTable();
             dt.Load(command.ExecuteReader(CommandBehavior.CloseConnection));
             DataGrid1.DataContext = dt;
@@ -58,8 +44,7 @@ namespace WpfApp1
         }
         private void click(object sender, RoutedEventArgs e)
         {
-            string sql = "INSERT INTO test(name, email, age) VALUES (@name, @email, @age)";
-            NpgsqlCommand command = new NpgsqlCommand(sql, GetConnection());
+            NpgsqlCommand command = new NpgsqlCommand("INSERT INTO test(name, email, age) VALUES (@name, @email, @age)", GetConnection());
             command.Parameters.Add(new NpgsqlParameter("@name", textBox_name.Text));
             command.Parameters.Add(new NpgsqlParameter("@email", textBox_email.Text));
             command.Parameters.Add(new NpgsqlParameter("@age", Convert.ToInt32(textBox_age.Text)));
@@ -68,8 +53,7 @@ namespace WpfApp1
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string sql = "TRUNCATE test RESTART IDENTITY;";
-            NpgsqlCommand command = new NpgsqlCommand(sql, GetConnection());
+            NpgsqlCommand command = new NpgsqlCommand("TRUNCATE test RESTART IDENTITY;", GetConnection());
             command.ExecuteNonQuery();
             InitializeDataTable();
         }
