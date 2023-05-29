@@ -21,15 +21,9 @@ namespace WpfApp1
                     MessageBox.Show(ex.Message);
                     con.Close();
                 }
-                catch (System.IO.IOException)
-                {
-                    MessageBox.Show("Error");
-                    con.Close();
-                }
                 return con;
             }
         }
-
         public void InitializeDataTable()
         {
             NpgsqlCommand command = new NpgsqlCommand($"SELECT * FROM test", Connection);
