@@ -7,7 +7,7 @@ namespace WpfApp1
 {
     public partial class MainWindow : Window
     {
-        public NpgsqlConnection Connection
+        public static NpgsqlConnection Connection
         {
             get
             {
