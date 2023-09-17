@@ -11,7 +11,7 @@ namespace WpfApp1
         {
             get
             {
-                NpgsqlConnection con = new NpgsqlConnection("Host=localhost;Port=5432;Database=test;Username=postgres;Password=1234");
+                NpgsqlConnection con = new("Host=localhost;Port=5432;Database=test;Username=postgres;Password=1234");
                 try
                 {
                     con.Open();
@@ -26,7 +26,7 @@ namespace WpfApp1
         }
         public void InitializeDataTable()
         {
-            NpgsqlCommand command = new NpgsqlCommand($"SELECT * FROM test", Connection);
+            NpgsqlCommand command = new($"SELECT * FROM test", Connection);
             DataTable dt = new DataTable();
             dt.Load(command.ExecuteReader(CommandBehavior.CloseConnection));
             DataGrid1.DataContext = dt;
@@ -42,7 +42,7 @@ namespace WpfApp1
         }
         private void click(object sender, RoutedEventArgs e)
         {
-            NpgsqlCommand command = new NpgsqlCommand("INSERT INTO test(name, email, age) VALUES (@name, @email, @age)", Connection);
+            NpgsqlCommand command = new("INSERT INTO test(name, email, age) VALUES (@name, @email, @age)", Connection);
             command.Parameters.Add(new NpgsqlParameter("@name", textBox_name.Text));
             command.Parameters.Add(new NpgsqlParameter("@email", textBox_email.Text));
             command.Parameters.Add(new NpgsqlParameter("@age", Convert.ToInt32(textBox_age.Text)));
@@ -51,7 +51,7 @@ namespace WpfApp1
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            NpgsqlCommand command = new NpgsqlCommand("TRUNCATE test RESTART IDENTITY;", Connection);
+            NpgsqlCommand command = new("TRUNCATE test RESTART IDENTITY;", Connection);
             command.ExecuteNonQuery();
             InitializeDataTable();
         }
